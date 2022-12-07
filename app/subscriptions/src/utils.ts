@@ -5,8 +5,10 @@ import path from 'path'
 
 export const GQL = {
   START: 'start',
+  SUBSCRIBE: 'subscribe',
   STOP: 'stop',
   DATA: 'data',
+  NEXT: 'next',
   ERROR: 'error',
   COMPLETE: 'complete',
   CONNECTION_INIT: 'connection_init',
