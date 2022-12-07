@@ -92,8 +92,9 @@ export class SocketManager {
 
   public closeSockets() {
     return Promise.all(
-      Object.values(this.connections).map((conn) => {
-        conn.socket.sendPacked({ type: GQL.COMPLETE })
+      Object.entries(this.connections).map(([id, conn]) => {
+        // Send same id with corresponding SUBSCRIBE message
+        conn.socket.sendPacked({ type: GQL.COMPLETE, id: String(id) })
         conn.socket.close()
       })
     )
