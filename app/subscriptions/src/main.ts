@@ -159,7 +159,7 @@ class Connection {
   private makeSocket() {
     const { endpoint, headers } = this.props.socketManagerConfig
     return new WebSocketAsPromised(endpoint, {
-      createWebSocket: (url) => new WebSocket(url, 'graphql-ws', { headers }),
+      createWebSocket: (url) => new WebSocket(url, 'graphql-transport-ws', { headers }),
       extractMessageData: (event) => event,
       packMessage: (data) => JSON.stringify(data),
       unpackMessage: (data) => JSON.parse(data as string),
@@ -180,9 +180,10 @@ class Connection {
       type: GQL.CONNECTION_INIT,
       payload: { headers },
     })
+    // TODO: should I wait ConnectionAck here?
     socket.sendPacked({
       id: String(id),
-      type: GQL.START,
+      type: GQL.SUBSCRIBE,
       payload: {
         query: subscriptionString,
         variables: queryVariables,
@@ -233,7 +234,7 @@ class Connection {
 
     this.socket.onUnpackedMessage.addListener((data) => {
       switch (data.type) {
-        case GQL.DATA:
+        case GQL.NEXT:
           const event = this.makeEventRow({ payload: data.payload, err: false })
           if (DEBUG) console.log('CALLED GQL.DATA CASE, GOT EVENT ROW', event)
           STATS_OBSERVABLE.DATA_EVENT_COUNT++
