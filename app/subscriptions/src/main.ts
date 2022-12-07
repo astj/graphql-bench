@@ -93,7 +93,7 @@ export class SocketManager {
   public closeSockets() {
     return Promise.all(
       Object.values(this.connections).map((conn) => {
-        conn.socket.sendPacked({ type: GQL.CONNECTION_TERMINATE })
+        conn.socket.sendPacked({ type: GQL.COMPLETE })
         conn.socket.close()
       })
     )
